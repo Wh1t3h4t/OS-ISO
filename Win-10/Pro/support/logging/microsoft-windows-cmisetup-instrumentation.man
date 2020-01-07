@@ -1,0 +1,65 @@
+<?xml version='1.0' encoding='utf-8' standalone='yes'?>
+<assembly xmlns="urn:schemas-microsoft-com:asm.v3" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" copyright="Copyright (c) Microsoft Corporation. All Rights Reserved." manifestVersion="1.0">
+  <assemblyIdentity buildType="release" language="neutral" name="Microsoft-Windows-CmiSetup-Instrumentation" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" version="10.0.10240.16384" versionScope="nonSxS"/>
+  <registryKeys>
+    <registryKey keyName="HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\WMI\AutoLogger\Microsoft-Windows-Setup\{75EBC33E-0CC6-49da-8CD9-8903A5222AA0}">
+      <registryValue name="Enabled" value="1" valueType="REG_DWORD"/>
+      <registryValue name="EnableLevel" value="4" valueType="REG_DWORD"/>
+    </registryKey>
+    <registryKey keyName="HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\WMI\AutoLogger\SetupPlatform\{75EBC33E-0CC6-49da-8CD9-8903A5222AA0}">
+      <registryValue name="Enabled" value="1" valueType="REG_DWORD"/>
+      <registryValue name="EnableLevel" value="4" valueType="REG_DWORD"/>
+    </registryKey>
+  </registryKeys>
+  <instrumentation xmlns:win="http://manifests.microsoft.com/win/2004/08/windows/events" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    <events xmlns="http://schemas.microsoft.com/win/2004/08/events">
+      <provider guid="{75EBC33E-0CC6-49da-8CD9-8903A5222AA0}" message="$(string.CmiSetup.ProviderMessage)" messageFileName="%SystemRoot%\system32\oobe\CmiSetup.dll" name="Microsoft-Windows-CmiSetup" resourceFileName="%SystemRoot%\system32\oobe\CmiSetup.dll" symbol="Microsoft_Windows_CmiSetup">
+        <channels>
+          <channel chid="chaCmiSetupAnalytic" name="Microsoft-Windows-CmiSetup/Analytic" type="Analytic"/>
+          <importChannel chid="chaSetup" name="Setup"/>
+        </channels>
+        <keywords>
+          <keyword mask="0x00000001" message="$(string.Performance.KeywordMessage)" name="keyPerformance"/>
+        </keywords>
+        <templates>
+          <template tid="tidErrorCodeResult">
+            <data inType="win:UInt32" name="ErrorCode"/>
+          </template>
+        </templates>
+        <tasks>
+          <task eventGUID="{C719CE52-9545-4c08-ACA8-0F3C42B6B9DE}" message="$(string.CmiConfigInstall.TaskMessage)" name="tskCmiConfigInstall" value="1000"/>
+          <task eventGUID="{6FA8AEBF-3323-4231-BFFD-DC0B54D6A73F}" message="$(string.CmiConfigInstallWork.TaskMessage)" name="tskCmiConfigInstallWork" value="2000"/>
+          <task eventGUID="{CD5F25F1-1717-4c21-8818-8DB698303259}" message="$(string.CbsDoOnlineInstall.TaskMessage)" name="tskCbsDoOnlineInstall" value="3000"/>
+        </tasks>
+        <events>
+          <event channel="chaCmiSetupAnalytic" keywords="keyPerformance" level="win:Informational" message="$(string.CmiConfigInstall.StartMessage)" opcode="win:Start" symbol="CmiConfigInstallStart" task="tskCmiConfigInstall" value="1001"/>
+          <event channel="chaCmiSetupAnalytic" keywords="keyPerformance" level="win:Informational" message="$(string.CmiConfigInstall.StopMessage)" opcode="win:Stop" symbol="CmiConfigInstallStop" task="tskCmiConfigInstall" template="tidErrorCodeResult" value="1002"/>
+          <event channel="chaCmiSetupAnalytic" keywords="keyPerformance" level="win:Informational" message="$(string.CmiConfigInstallWork.StartMessage)" opcode="win:Start" symbol="CmiConfigInstallWorkStart" task="tskCmiConfigInstallWork" value="2001"/>
+          <event channel="chaCmiSetupAnalytic" keywords="keyPerformance" level="win:Informational" message="$(string.CmiConfigInstallWork.StopMessage)" opcode="win:Stop" symbol="CmiConfigInstallWorkStop" task="tskCmiConfigInstallWork" template="tidErrorCodeResult" value="2002"/>
+          <event channel="chaCmiSetupAnalytic" keywords="keyPerformance" level="win:Informational" message="$(string.CbsDoOnlineInstall.StartMessage)" opcode="win:Start" symbol="CbsDoOnlineInstallStart" task="tskCbsDoOnlineInstall" value="3001"/>
+          <event channel="chaCmiSetupAnalytic" keywords="keyPerformance" level="win:Informational" message="$(string.CbsDoOnlineInstall.StopMessage)" opcode="win:Stop" symbol="CbsDoOnlineInstallStop" task="tskCbsDoOnlineInstall" template="tidErrorCodeResult" value="3002"/>
+        </events>
+      </provider>
+    </events>
+  </instrumentation>
+  <localization>
+    <resources culture="en-US">
+      <stringTable>
+        <string id="Performance.KeywordMessage" value="Performance"/>
+        <string id="CmiSetup.ProviderMessage" value="Microsoft-Windows-CmiSetup"/>
+        <string id="CmiConfigInstall.TaskMessage" value="CMI Configuration"/>
+        <string id="CmiConfigInstall.StartMessage" value="CMI Configuration Started"/>
+        <string id="CmiConfigInstall.StopMessage" value="CMI Configuration completed with status %1."/>
+        <string id="CmiConfigInstallWork.TaskMessage" value="CMI Execute Changes"/>
+        <string id="CmiConfigInstallWork.StartMessage" value="Executing CMI changes."/>
+        <string id="CmiConfigInstallWork.StopMessage" value="CMI changes completed with status %1."/>
+        <string id="CbsDoOnlineInstall.TaskMessage" value="CBS Online Install"/>
+        <string id="CbsDoOnlineInstall.StartMessage" value="Performing CBS Online Install."/>
+        <string id="CbsDoOnlineInstall.StopMessage" value="CBS Online Install completed with status %1."/>
+      </stringTable>
+    </resources>
+  </localization>
+  <cbb:debuggingInfo xmlns:cbb="urn:schemas-microsoft-com:asm.internal.v1">
+    <cbb:sourceManifest sourcePath="%basedir%\base\cmi\setup\microsoft-windows-cmisetup-instrumentation.man"/>
+  </cbb:debuggingInfo>
+</assembly>

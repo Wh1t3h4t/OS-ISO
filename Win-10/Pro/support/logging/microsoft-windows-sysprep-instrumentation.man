@@ -1,0 +1,125 @@
+<?xml version='1.0' encoding='utf-8' standalone='yes'?>
+<assembly xmlns="urn:schemas-microsoft-com:asm.v3" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" copyright="Copyright (c) Microsoft Corporation. All Rights Reserved." manifestVersion="1.0">
+  <assemblyIdentity buildType="release" language="neutral" name="Microsoft-Windows-Sysprep-Instrumentation" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" version="10.0.10240.16384" versionScope="nonSxS"/>
+  <registryKeys>
+    <registryKey keyName="HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\WMI\AutoLogger\Microsoft-Windows-Setup\{75EBC33E-77B8-4ba8-9474-4F4A9DB2F5C6}">
+      <registryValue name="Enabled" value="1" valueType="REG_DWORD"/>
+      <registryValue name="EnableLevel" value="4" valueType="REG_DWORD"/>
+    </registryKey>
+    <registryKey keyName="HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\WMI\AutoLogger\SetupPlatform\{75EBC33E-77B8-4ba8-9474-4F4A9DB2F5C6}">
+      <registryValue name="Enabled" value="1" valueType="REG_DWORD"/>
+      <registryValue name="EnableLevel" value="4" valueType="REG_DWORD"/>
+    </registryKey>
+  </registryKeys>
+  <instrumentation xmlns:win="http://manifests.microsoft.com/win/2004/08/windows/events" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    <events xmlns="http://schemas.microsoft.com/win/2004/08/events">
+      <provider guid="{75EBC33E-77B8-4ba8-9474-4F4A9DB2F5C6}" message="$(string.Sysprep.ProviderMessage)" messageFileName="%SystemRoot%\system32\sysprep\sysprep.exe" name="Microsoft-Windows-Sysprep" resourceFileName="%SystemRoot%\system32\sysprep\sysprep.exe" symbol="MicrosoftWindowsSysprep">
+        <channels>
+          <channel chid="chaSysprepAnalytic" name="Microsoft-Windows-Sysprep/Analytic" type="Analytic"/>
+          <importChannel chid="chaSetup" name="Setup"/>
+        </channels>
+        <keywords>
+          <keyword mask="0x00000001" message="$(string.Performance.KeywordMessage)" name="keyPerformance"/>
+          <keyword mask="0x00000002" message="$(string.Sysprep.KeywordMessage)" name="keySysprep"/>
+        </keywords>
+        <templates>
+          <template tid="tidRunRegistryDlls">
+            <data inType="win:UnicodeString" name="BasePath"/>
+            <data inType="win:UnicodeString" name="Phase"/>
+          </template>
+          <template tid="tidCallSysprepFunction">
+            <data inType="win:UnicodeString" name="DllName"/>
+            <data inType="win:AnsiString" name="FunctionName"/>
+            <data inType="win:UInt32" name="ErrorCode"/>
+          </template>
+          <template tid="tidErrorCodeResult">
+            <data inType="win:UInt32" name="ErrorCode"/>
+          </template>
+          <template tid="tidLoadActionMetadata">
+            <data inType="win:UnicodeString" name="ActionFilePath"/>
+          </template>
+          <template tid="tidCreateActionList">
+            <data inType="win:UnicodeString" name="ComponentName"/>
+          </template>
+          <template tid="tidDeleteFile">
+            <data inType="win:UnicodeString" name="DirectoryPath"/>
+            <data inType="win:UnicodeString" name="FilePattern"/>
+          </template>
+          <template tid="tidDeleteFileResult">
+            <data inType="win:UnicodeString" name="DirectoryPath"/>
+            <data inType="win:UnicodeString" name="FilePattern"/>
+            <data inType="win:UInt32" name="ErrorCode"/>
+          </template>
+          <template tid="tidDeleteDirectory">
+            <data inType="win:UnicodeString" name="DirectoryPath"/>
+          </template>
+          <template tid="tidDeleteDirectoryResult">
+            <data inType="win:UnicodeString" name="DirectoryPath"/>
+            <data inType="win:UInt32" name="ErrorCode"/>
+          </template>
+          <template tid="tidExecuteFullPhase">
+            <data inType="win:UnicodeString" name="Phase"/>
+          </template>
+        </templates>
+        <tasks>
+          <task eventGUID="{B2F1C8AA-2B6A-4140-AD69-AC1A794DFACF}" message="$(string.RunRegistryDlls.TaskMessage)" name="tskRunRegistryDlls" value="1000"/>
+          <task eventGUID="{799DE0B7-0599-45bf-B601-B4B7CECB7B0B}" message="$(string.CallSysprepFunction.TaskMessage)" name="tskCallSysprepFunction" value="2000"/>
+          <task eventGUID="{9DFFCD2E-6380-4249-9139-C5DC3CA9AEAA}" message="$(string.LoadActionMetadata.TaskMessage)" name="tskLoadActionMetadata" value="3000"/>
+          <task eventGUID="{E83C1B67-14A6-4859-B46F-CFB88F0DB5A6}" message="$(string.CreateActionList.TaskMessage)" name="tskCreateActionList" value="4000"/>
+          <task eventGUID="{150390B0-2A95-45D4-A95B-50AB18C43DC5}" message="$(string.DeleteFile.TaskMessage)" name="tskDeleteFile" value="5000"/>
+          <task eventGUID="{4E6EAC7E-74A7-4BED-8AF3-465176A542B4}" message="$(string.DeleteDirectory.TaskMessage)" name="tskDeleteDirectory" value="6000"/>
+          <task eventGUID="{943408EE-D8FE-4B53-A357-52D801BF3194}" message="$(string.ExecuteFullPhase.TaskMessage)" name="tskExecuteFullPhase" value="7000"/>
+        </tasks>
+        <events>
+          <event channel="chaSysprepAnalytic" keywords="keyPerformance keySysprep" level="win:Informational" message="$(string.RunRegistryDlls.StartMessage)" opcode="win:Start" symbol="RunRegistryDllsStart" task="tskRunRegistryDlls" template="tidRunRegistryDlls" value="1001"/>
+          <event channel="chaSysprepAnalytic" keywords="keyPerformance keySysprep" level="win:Informational" message="$(string.RunRegistryDlls.StopMessage)" opcode="win:Stop" symbol="RunRegistryDllsStop" task="tskRunRegistryDlls" template="tidErrorCodeResult" value="1002"/>
+          <event channel="chaSysprepAnalytic" keywords="keyPerformance keySysprep" level="win:Informational" message="$(string.CallSysprepFunction.StartMessage)" opcode="win:Start" symbol="CallSysprepFunctionStart" task="tskCallSysprepFunction" template="tidCallSysprepFunction" value="2001"/>
+          <event channel="chaSysprepAnalytic" keywords="keyPerformance keySysprep" level="win:Informational" message="$(string.CallSysprepFunction.StopMessage)" opcode="win:Stop" symbol="CallSysprepFunctionStop" task="tskCallSysprepFunction" template="tidCallSysprepFunction" value="2002"/>
+          <event channel="chaSysprepAnalytic" keywords="keyPerformance keySysprep" level="win:Informational" message="$(string.LoadActionMetadata.StartMessage)" opcode="win:Start" symbol="LoadActionMetadataStart" task="tskLoadActionMetadata" template="tidLoadActionMetadata" value="3001"/>
+          <event channel="chaSysprepAnalytic" keywords="keyPerformance keySysprep" level="win:Informational" message="$(string.LoadActionMetadata.StopMessage)" opcode="win:Stop" symbol="LoadActionMetadataStop" task="tskLoadActionMetadata" template="tidLoadActionMetadata" value="3002"/>
+          <event channel="chaSysprepAnalytic" keywords="keyPerformance keySysprep" level="win:Informational" message="$(string.CreateActionList.StartMessage)" opcode="win:Start" symbol="CreateActionListStart" task="tskCreateActionList" template="tidCreateActionList" value="4001"/>
+          <event channel="chaSysprepAnalytic" keywords="keyPerformance keySysprep" level="win:Informational" message="$(string.CreateActionList.StopMessage)" opcode="win:Stop" symbol="CreateActionListStop" task="tskCreateActionList" template="tidCreateActionList" value="4002"/>
+          <event channel="chaSysprepAnalytic" keywords="keyPerformance keySysprep" level="win:Informational" message="$(string.DeleteFile.StartMessage)" opcode="win:Start" symbol="DeleteFileStart" task="tskDeleteFile" template="tidDeleteFile" value="5001"/>
+          <event channel="chaSysprepAnalytic" keywords="keyPerformance keySysprep" level="win:Informational" message="$(string.DeleteFile.StopMessage)" opcode="win:Stop" symbol="DeleteFileStop" task="tskDeleteFile" template="tidDeleteFileResult" value="5002"/>
+          <event channel="chaSysprepAnalytic" keywords="keyPerformance keySysprep" level="win:Informational" message="$(string.DeleteDirectory.StartMessage)" opcode="win:Start" symbol="DeleteDirectoryStart" task="tskDeleteDirectory" template="tidDeleteDirectory" value="6001"/>
+          <event channel="chaSysprepAnalytic" keywords="keyPerformance keySysprep" level="win:Informational" message="$(string.DeleteDirectory.StopMessage)" opcode="win:Stop" symbol="DeleteDirectoryStop" task="tskDeleteDirectory" template="tidDeleteDirectoryResult" value="6002"/>
+          <event channel="chaSysprepAnalytic" keywords="keyPerformance keySysprep" level="win:Informational" message="$(string.ExecuteFullPhase.StartMessage)" opcode="win:Start" symbol="ExecuteFullPhaseStart" task="tskExecuteFullPhase" template="tidExecuteFullPhase" value="7001"/>
+          <event channel="chaSysprepAnalytic" keywords="keyPerformance keySysprep" level="win:Informational" message="$(string.ExecuteFullPhase.StopMessage)" opcode="win:Stop" symbol="ExecuteFullPhaseStop" task="tskExecuteFullPhase" template="tidErrorCodeResult" value="7002"/>
+        </events>
+      </provider>
+    </events>
+  </instrumentation>
+  <localization>
+    <resources culture="en-US">
+      <stringTable>
+        <string id="Performance.KeywordMessage" value="Performance"/>
+        <string id="Sysprep.KeywordMessage" value="Sysprep"/>
+        <string id="Sysprep.ProviderMessage" value="Microsoft-Windows-Sysprep"/>
+        <string id="RunRegistryDlls.TaskMessage" value="RunRegistryDlls"/>
+        <string id="RunRegistryDlls.StartMessage" value="Executing sysprep providers from registry location &quot;%1&quot; during %2."/>
+        <string id="RunRegistryDlls.StopMessage" value="Finished executing sysprep providers with status %1."/>
+        <string id="CallSysprepFunction.TaskMessage" value="Call External Provider Function"/>
+        <string id="CallSysprepFunction.StartMessage" value="Calling external function &quot;%2&quot; from &quot;%1&quot;."/>
+        <string id="CallSysprepFunction.StopMessage" value="External function returned with status %1."/>
+        <string id="LoadActionMetadata.TaskMessage" value="Load action meta-data file"/>
+        <string id="LoadActionMetadata.StartMessage" value="Loading meta-data file &quot;%1&quot;."/>
+        <string id="LoadActionMetadata.StopMessage" value="Loading of meta-data file &quot;%1&quot; completed."/>
+        <string id="CreateActionList.TaskMessage" value="Create list of actions for a component"/>
+        <string id="CreateActionList.StartMessage" value="Creating action list for component &quot;%1&quot;."/>
+        <string id="CreateActionList.StopMessage" value="Action list for component &quot;%1&quot; created."/>
+        <string id="DeleteFile.TaskMessage" value="Deleting file(s) of a pattern"/>
+        <string id="DeleteFile.StartMessage" value="Deleting file(s) &quot;%2&quot; from directory &quot;%1&quot;."/>
+        <string id="DeleteFile.StopMessage" value="File deletion of &quot;%2&quot; from directory &quot;%1&quot; returned with status %3."/>
+        <string id="DeleteDirectory.TaskMessage" value="Delete a directory"/>
+        <string id="DeleteDirectory.StartMessage" value="Deleting directory &quot;%1&quot;."/>
+        <string id="DeleteDirectory.StopMessage" value="Directory deletion for &quot;%1&quot; returned with status %2."/>
+        <string id="ExecuteFullPhase.TaskMessage" value="Execute an entire phase"/>
+        <string id="ExecuteFullPhase.StartMessage" value="Starting execution of phase &quot;%1&quot;."/>
+        <string id="ExecuteFullPhase.StopMessage" value="Execution of phase returned status %1."/>
+      </stringTable>
+    </resources>
+  </localization>
+  <cbb:debuggingInfo xmlns:cbb="urn:schemas-microsoft-com:asm.internal.v1">
+    <cbb:sourceManifest sourcePath="%basedir%\base\ntsetup\opktools\sysprep\man\microsoft-windows-sysprep-instrumentation.man"/>
+  </cbb:debuggingInfo>
+</assembly>
